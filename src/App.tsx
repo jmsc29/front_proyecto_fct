@@ -1,58 +1,50 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import Login from './componentes/paginas/login/Login';
-import Dashboard from './componentes/paginas/dashboard/Dashboard';
-import Registro from './componentes/paginas/registro/Registro';
-import { urlBase } from './endpoints';
 import Nav from './componentes/nav/Nav';
-import Home from './componentes/paginas/home/Home';
-import { Cookies, useCookies } from 'react-cookie';
-import { useFetchUser } from './hooks/useFetchUser';
-import Usuario from './models/Usuario';
 import AuthContext from './componentes/context/AuthContext';
-import PrivatesRoutes from './componentes/rutas/PrivatedRoutes';
 import { MisRutas } from './componentes/rutas/MisRutas';
+import Loading from './componentes/loading/Loading';
+import Cookies from 'js-cookie';
 
 function App() {
 
-  /*const [nombre, setNombre] = useState('');
-  const [cookies, setCookie, removeCookie] = useCookies(['jwt']);
+  console.log(Cookies.get('jwt'));
 
-  const { miUsuario, setMiUsuario } = useContext(AuthContext);
+  if(Cookies.get('jwt')){
+
+  }
+
+  //usuario en cuestión
+  const { setMiUsuario } = useContext(AuthContext);
+
+  const limpiarAlmacenamientoInterno = () => {
+    setMiUsuario(null);
+    window.localStorage.clear();
+    Cookies.remove('jwt');
+  }
+  
+  //window.onunload = limpiarAlmacenamientoInterno;  --> Este sería al cerrar la pestaña
+  //Acción al cerrar el navegador -- limpiar el almacenamiento interno que contiene el usuario
+  window.onclose = limpiarAlmacenamientoInterno;
+
+  const { load } = useContext(AuthContext);
+  const [ loadAux, setLoadAux ] = useState();
 
   useEffect(() => {
-    (
-      async () => {
-        const response = await fetch(`${urlBase}/user`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-        });
-
-        const content = await response.json();
-        setNombre(content.nombre);
-
-
-        var miUsuario = content;
-
-        if (miUsuario.id_usuario) {
-          console.log(miUsuario);
-          console.log(miUsuario.id_usuario);
-          console.log(miUsuario.nombre);
-        }
-
-
-      }
-    )();
-  });*/
-
+    setLoadAux(load);  
+  },[load]);
 
   return (
     <>
       <div className="App">
-            <Nav />
-            <MisRutas />
+        {
+          loadAux ? (
+            <>
+              <Nav />
+              <MisRutas />
+            </>
+          ) : <Loading />
+        }
       </div>
 
     </>
