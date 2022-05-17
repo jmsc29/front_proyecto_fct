@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
         
         const content = await response.json();
         setMiUsuario(content);
+        console.log('EL USUARIO ES ' + content.nombre)
       }
     )();  
     setLoad(true);  

@@ -14,10 +14,8 @@ import Usuario from '../../../models/Usuario';
 export default function Editar() {
 
     const { setLoad } = useContext(AuthContext);
-    //setLoad(false);
 
     const { setUsuarioEditar } = useContext(AuthContext);
-
 
     const [empleados, setEmpleados] = useState([]);
 
@@ -45,7 +43,6 @@ export default function Editar() {
             headers: { 'Content-Type': 'application/json' }
         });
         const data = await response.json();
-        setLoad(true);
         setEmpleados(data);
     }
 
@@ -102,19 +99,6 @@ export default function Editar() {
     ]
 
 
-
-    const res = useFetch(`${urlBase}/usuarios`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    });
-
-    const data = res.response;
-
-    if (Array.isArray(data)) {
-        var result = data.map((element) => {
-            return element;
-        });
-    }
 
     const navigate = useNavigate();
 

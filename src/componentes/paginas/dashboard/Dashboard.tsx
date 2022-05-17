@@ -1,86 +1,104 @@
-import React, { useContext } from 'react';
-import AuthContext from '../../context/AuthContext';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { urlBase } from '../../../endpoints';
 import { useFetch } from '../../../hooks/useFetch';
+import swal from 'sweetalert';
+import Registro from '../../../models/Registro';
+import { mostrarCuadroDialogo, toastLogueado } from '../../../utils/Utils';
+import AuthContext from '../../context/AuthContext';
+import DataTable, { createTheme } from 'react-data-table-component';
+import "styled-components"
+import Usuario from '../../../models/Usuario';
+
+export default function Dashboard() {
 
 
-export default function Dashboard(){
+    const [empleados, setEmpleados] = useState([]);
+    const [registros, setRegistros] = useState([]);
 
-    const { miUsuario } = useContext(AuthContext);
+    createTheme('customStyles', {
+        text: {
+          primary: '#000000',
+          secondary: '#000000',
+        },
+        background: {
+          default: '#f5f5dc',
+        },
+        context: {
+          background: '#d7d7a8',
+          text: '#000000',
+        },
+        divider: {
+          default: '#073642',
+        },
+      }, 'light');
 
-    const { setUsuarioEditar } = useContext(AuthContext);
 
-    const res = useFetch(`${urlBase}/registros`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    });
-
-    const data = res.response;
-
-    console.log(data);
-
-    if (Array.isArray(data)) {
-        var result = data.map((element) => {
-            return element;
+    const showData = async () =>{
+        const responseEmpleados = await fetch(`${urlBase}/usuarios`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
         });
+        const dataEmpleados = await responseEmpleados.json();
+
+
+        const response = await fetch(`${urlBase}/registros`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await response.json();
+        console.log(data);
+        //setRegistros(data);
+
+        
+        setRegistros(data.concat(dataEmpleados));
     }
 
-    return (
-        <>
-            <h2>Dashboard</h2><br /><br />
-            <table id="dtBasicExample" className="table table-striped table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Hora</th>
-                        {/* <th scope="col">Apellidos</th>
-                        <th scope="col">Teléfono</th>
-                        <th scope="col">Departamento</th>
-                        <th scope="col">Tipo de usuario</th>
-                        <th scope="col">Editar</th>
-                        <th scope="col">Eliminar</th> */}
-                    </tr>
-                </thead>
-                <tbody>
-                    {result && result.map(row => {
-                        return (
-                            <tr>
-                                <th scope="row" key={row.id_registro}>{row.id_registro}</th>
-                                <td>{row.fecha.split(["T"])[0]}</td>
-                                <td>{row.hora.hours + ":" + row.hora.minutes + ":" + row.hora.seconds}</td>
-                                {/* <td>{row.apellidos}</td>
-                                <td>{row.telefono}</td>
-                                <td>{row.departamento}</td>
-                                <td>{row.tipo_usuario}</td> */}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-            <br /> <br />
-        </>
-    )
+    useEffect(() => {
+        showData();
+        console.log(registros);
+    }, [registros])
+
+    const columns = [
+        {
+            keyField: row => row.id_registro,
+            name: "Nombre",
+            selector: row => row.nombre, //row.usuario?.nombre ? row.usuario.nombre : "no",
+            sortable: true
+        },
+        {
+            name: "Fecha",
+            selector: row => row.fecha,
+            sortable: true
+        },
+        {
+            name: "Hora",
+            selector: row => row.hora,
+            sortable: true
+        },
+        {
+            name: "Tipo",
+            selector: row => row.tipo ? "Entrada" : "Salida",
+            sortable: true
+        },
+        {
+            name: "Usuario",
+            selector: row => row.usuario ? "Entrada" : "Salida",
+            sortable: true
+        }
+    ]
 
     return (
         <>
-            <h2>Dashboard</h2><br/><br/>
-            <table className="table table-striped table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Apellidos</th>
-                        <th scope="col">Departamento</th>
-                        <th scope="col">Tipo de usuario</th>
-                        <th scope="col">Registro</th>
-                        <th scope="col">Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <DataTable
+                columns = {columns}
+                data = {registros}
+                pagination
+                title = "Registros"
+                persistTableHead
+                theme="customStyles"
+                />
+            <br /> <br />
         </>
     )
 }
