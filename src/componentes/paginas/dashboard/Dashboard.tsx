@@ -35,23 +35,14 @@ export default function Dashboard() {
 
 
     const showData = async () =>{
-        const responseEmpleados = await fetch(`${urlBase}/usuarios`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        const dataEmpleados = await responseEmpleados.json();
-
-
         const response = await fetch(`${urlBase}/registros`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
-        const data = await response.json();
-        console.log(data);
-        //setRegistros(data);
-
         
-        setRegistros(data.concat(dataEmpleados));
+        const data = await response.json();
+        console.log(data.content);
+        setRegistros(data);
     }
 
     useEffect(() => {
@@ -79,11 +70,6 @@ export default function Dashboard() {
         {
             name: "Tipo",
             selector: row => row.tipo ? "Entrada" : "Salida",
-            sortable: true
-        },
-        {
-            name: "Usuario",
-            selector: row => row.usuario ? "Entrada" : "Salida",
             sortable: true
         }
     ]
