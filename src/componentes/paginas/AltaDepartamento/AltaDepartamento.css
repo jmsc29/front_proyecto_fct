@@ -1,0 +1,16 @@
+.contenedorDepartamento {
+  display: grid;
+  grid-template-areas:
+    "altaDepartamento tablaDepartamentos";
+  grid-template-columns: 1fr 1fr;
+}
+
+.altaDepartamento {
+  grid-area: altaDepartamento;
+  margin-top: 10%;
+}
+
+.tablaDepartamentos {
+  grid-area: tablaDepartamentos;
+  width: 50%;
+}

@@ -6,6 +6,7 @@ const useAuth = () => {
   return cookies.jwt;
 };
 
+//En caso de estar loogeado muestra los componentes correspondientes, en caso contrario redirije a login
 const ProtectedRoutes = () => {
   const isAuth = useAuth();
   return isAuth ? <Outlet /> : <Navigate to="/login" />;

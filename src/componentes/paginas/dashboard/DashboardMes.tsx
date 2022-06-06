@@ -1,25 +1,25 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { urlBase } from '../../../endpoints';
-import { useFetch } from '../../../hooks/useFetch';
 import swal from 'sweetalert';
-import Registro from '../../../models/Registro';
-import { mostrarCuadroDialogo, toastLogueado } from '../../../utils/Utils';
 import AuthContext from '../../context/AuthContext';
 import DataTable, { createTheme } from 'react-data-table-component';
 import "styled-components"
-import Usuario from '../../../models/Usuario';
-import reportWebVitals from '../../../reportWebVitals';
+import { CSVLink } from "react-csv";
 import Loading from '../../loading/Loading';
 import './Dashboard.css'
 
-export default function Dashboard() {
+export default function DashboardMes() {
 
     const [registros, setRegistros] = useState([]);
+    const { fechaRegistros } = useContext(AuthContext);
     const { setRegistroEditar } = useContext(AuthContext);
-    const { setFechaRegistros } = useContext(AuthContext);
-    const [fechaAux, setFechaAux] = useState<string>();
     const [pending, setPending] = useState(true);
+
+    const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+
     const navigate = useNavigate();
 
     //Editar registro
@@ -35,7 +35,6 @@ export default function Dashboard() {
             setRegistroEditar(content);
             navigate("/editarRegistro/" + id_registro);
         }
-
     }
 
     //Eliminar registro
@@ -96,9 +95,10 @@ export default function Dashboard() {
 
 
     const showData = async () => {
-        const response = await fetch(`${urlBase}/registros`, {
+        const mes = fechaRegistros.split("-")[1];
+        const response = await fetch(`${urlBase}/registros/mes/${mes}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' }
         });
 
         const data = await response.json();
@@ -142,37 +142,41 @@ export default function Dashboard() {
         }
     ]
 
-    //Acción al pulsar el botón para mostrar los registros de un mes en concreto
-    const consultarRegistros = async (e) => {
-        e.preventDefault();
-        setFechaRegistros(fechaAux);
-        navigate("/dashboard/consulta");
+    const headers = [
+        { label: 'id_registro', key: 'id_registro' },
+        { label: 'id_usuario', key: 'id_usuario' },
+        { label: 'nombre', key: 'usuario.nombre' },
+        { label: 'fecha', key: 'fecha' },
+        { label: 'hora', key: 'hora' },
+        { label: 'tipo', key: 'tipo' }
+    ];
+
+    //Preferencias para el csv a descargar
+    const csvReport = {
+        filename: `Registros_${meses[fechaRegistros.split("-")[1] - 1]}_${fechaRegistros.split("-")[0]}`,
+        headers: headers,
+        data: registros
     }
 
     return (
         <>
-            <div className='contenedor'>
-                <div className="formDashboard">
-                    <form id="registroUsuarioFormEditar" className="form-signin" onSubmit={consultarRegistros}>
-                        <h1 className="h3 mb-3 font-weight-normal">Registros de un mes</h1>
-                        <input required type="month" id="inputIdRegistro" className="form-control" placeholder="Fecha" onChange={e => setFechaAux(e.target.value)} /><br />
-                        <button className="btn btn-lg btn-primary btn-block" type="submit">Mostrar registros</button>
-                    </form>
-                </div>
-                <div className='tablaDashboard'>
-                    <DataTable
-                        columns={columns}
-                        data={registros}
-                        pagination
-                        paginationComponentOptions={opcionesPagination}
-                        progressPending={pending}
-                        progressComponent={<Loading />}
-                        noDataComponent="No hay registros del día de hoy."
-                        title="Registros"
-                        persistTableHead
-                        theme="customStyles"
-                    />
-                </div>
+            <div className='tablaRegistros'>
+                <DataTable
+                    columns={columns}
+                    data={registros}
+                    pagination
+                    paginationComponentOptions={opcionesPagination}
+                    progressPending={pending}
+                    progressComponent={<Loading />}
+                    noDataComponent={`No hay registros de ${meses[fechaRegistros.split("-")[1] - 1]} de ${fechaRegistros.split("-")[0]}`}
+                    title={`Consulta de registros de ${meses[fechaRegistros.split("-")[1] - 1]} de ${fechaRegistros.split("-")[0]}`}
+                    persistTableHead
+                    theme="customStyles"
+                />
+                <br /> <br />
+            </div>
+            <div>
+                <CSVLink {...csvReport}>Descargar Registros</CSVLink>
             </div>
         </>
     )

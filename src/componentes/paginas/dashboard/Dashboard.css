@@ -1,0 +1,22 @@
+.tablaRegistros {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.contenedor {
+    display: grid;
+    grid-template-areas:
+        "formDashboard tablaDashboard";
+    grid-template-columns: 1fr 3fr;
+}
+
+.formDashboard {
+    grid-area: formDashboard;
+    margin-top: 10%;
+}
+
+.tablaDashboard {
+    grid-area: tablaDashboard;
+    margin-right: 5%;
+}

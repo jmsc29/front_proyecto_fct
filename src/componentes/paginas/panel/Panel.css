@@ -2,18 +2,18 @@ h1 {
   color: black;
 }
 
-.imagen_inicio {
+.imagen_panel {
   width: 65%;
 }
 
-.contenedorHome {
+.contenedorPanel {
   display: grid;
   grid-template-areas:
-    "imagen texto";
+    "imagen derecha";
   grid-template-columns: 3fr 2fr;
 }
 
-.texto {
+p {
   grid-area: texto;
   display: flex;
   align-items: center;
@@ -24,6 +24,23 @@ h1 {
   margin-right: 15%;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   font-size: 1.1rem;
+}
+
+.derecha {
+  display: grid;
+  grid-template-areas:
+    "texto"
+    "btnRegistro";
+  grid-template-rows: 3fr 1fr;
+}
+
+.texto {
+  grid-area: texto;
+}
+
+.btnRegistro {
+  grid-area: btnRegistro;
+  text-align: left;
 }
 
 .imagen {

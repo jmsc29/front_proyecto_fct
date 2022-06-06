@@ -33,7 +33,7 @@ export default function Login() {
 
         setTimeout(() => {
             cancelRequest();
-        }, 25000);
+        }, 60000); //Le pongo un minuto de timeOut para asegurarme de que tenga tiempo de sobra
 
         try {
             abortController.current = new AbortController();
@@ -53,12 +53,14 @@ export default function Login() {
                 setRedirect(true);
                 setMiUsuario(content);
                 window.localStorage.setItem('user', content);
-                
+
             } else if (response.status === 400) {
                 if (content.message === "Contraseña incorrecta") {
                     mostrarCuadroDialogo("Error", "Contraseña incorrecta.", "error", 3000);
                 } else if (content.message === "Credenciales inválidas") {
                     mostrarCuadroDialogo("Error", "Usuario no encontrado.", "error", 3000);
+                } else if (content.message === "Usuario no activo") {
+                    mostrarCuadroDialogo("Error", "Usuario no activo, por favor, contacta con tu empresa.", "warning", 4500);
                 }
                 else {
                     mostrarCuadroDialogo("Error", "No se ha podido establecer conexión con la base de datos.", "warning", 4500);
@@ -77,14 +79,15 @@ export default function Login() {
         }
     }
 
+    //Ejecución una vez se termina el timeOut
     const cancelRequest = () => {
         abortController.current && abortController.current.abort();
         setLoad(true);
     }
 
+    //Si el login es satisfactorio establezco la variable global 'setLoad' a 'true' para que termine la animación del gif 'cargando' y redirijo al panel
     if (redirect) {
         setLoad(true);
-        
         return <Navigate to="/panel" />;
     }
 
@@ -96,7 +99,6 @@ export default function Login() {
                     <input type="text" id="inputNombreUsuario" className="form-control" placeholder="Nombre de usuario" required onChange={e => setNombreUsuario(e.target.value)} /><br />
                     <input type="password" id="inputPassword" className="form-control" placeholder="Contraseña" required onChange={e => setPassword(e.target.value)} /><br />
                     <button className="btn btn-lg btn-primary btn-block" type="submit">Iniciar sesión</button>
-                    <p className="mt-5 mb-3 text-muted">&copy;JMSaez</p>
                 </form>
             </div>
         </>

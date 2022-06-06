@@ -6,5 +6,5 @@ export default interface Registro{
     hora: Date,
     tipo: string,
     id_usuario: number,
-    nombre: string
+    usuario: Usuario
 }

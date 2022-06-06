@@ -1,7 +1,10 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Ajustes from '../paginas/ajustes/Ajustes'
+import AltaDepartamento from '../paginas/AltaDepartamento/AltaDepartamento'
 import Dashboard from '../paginas/dashboard/Dashboard'
+import DashboardMes from '../paginas/dashboard/DashboardMes'
+import EditarRegistro from '../paginas/dashboard/EditarRegistro'
 import Editar from '../paginas/editar/Editar'
 import EditarEspecifico from '../paginas/editar/EditarEspecifico'
 import Home from '../paginas/home/Home'
@@ -26,9 +29,14 @@ export const MisRutas = () => (
         {/*   RUTAS PRIVADAS PARA ADMINISTRADOR   */}
         <Route element={<PrivatedRoutesAdmin />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/consulta" element={<DashboardMes />} />
+            <Route path="/dashboard/consulta/:mes" element={<DashboardMes />} />
             <Route path="/registro" element={<Registro />} />
-            <Route path="/editar" element={<Editar />} />
-            <Route path="/editar/:id_usuario" element={<EditarEspecifico />} />
+            <Route path="/editarEmpleado" element={<Editar />} />
+            <Route path="/editarEmpleado/:id_usuario" element={<EditarEspecifico />} />
+            <Route path="/editarRegistro/:id_usuario" element={<EditarRegistro />} />
+            <Route path="/altaDepartamento" element={<AltaDepartamento />} />
+            <Route path="/altaDepartamento/:id_usuario" element={<AltaDepartamento />} />
         </Route>
 
         {/*   RUTAS PÚBLICAS (No se puede acceder si se está logueado)   */}

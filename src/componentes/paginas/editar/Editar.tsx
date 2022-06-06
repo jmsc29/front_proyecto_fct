@@ -1,49 +1,47 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { urlBase } from '../../../endpoints';
-import { useFetch } from '../../../hooks/useFetch';
 import swal from 'sweetalert';
-import Registro from '../../../models/Registro';
-import { mostrarCuadroDialogo, toastLogueado } from '../../../utils/Utils';
 import AuthContext from '../../context/AuthContext';
 import DataTable, { createTheme } from 'react-data-table-component';
 import "styled-components"
 import "./Editar.css"
-import Usuario from '../../../models/Usuario';
+import Loading from '../../loading/Loading';
 
 export default function Editar() {
 
-    const { setLoad } = useContext(AuthContext);
-
+    const [pending, setPending] = useState(true);
     const { setUsuarioEditar } = useContext(AuthContext);
-
+    const { setDepartamentoEditar } = useContext(AuthContext);
     const [empleados, setEmpleados] = useState([]);
 
+    //Opciones de la tabla
     createTheme('customStyles', {
         text: {
-          primary: '#000000',
-          secondary: '#000000',
+            primary: '#000000',
+            secondary: '#000000',
         },
         background: {
-          default: '#f5f5dc',
+            default: '#f5f5dc',
         },
         context: {
-          background: '#d7d7a8',
-          text: '#000000',
+            background: '#d7d7a8',
+            text: '#000000',
         },
         divider: {
-          default: '#073642',
+            default: '#073642',
         },
-      }, 'light');
+    }, 'light');
 
 
-    const showData = async () =>{
+    const showData = async () => {
         const response = await fetch(`${urlBase}/usuarios`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
         const data = await response.json();
         setEmpleados(data);
+        setPending(false);
     }
 
     useEffect(() => {
@@ -79,12 +77,17 @@ export default function Editar() {
         },
         {
             name: "Departamento",
-            selector: row => row.departamento,
+            selector: row => row.departamento.nombre,
             sortable: true
         },
         {
             name: "Tipo de usuario",
             selector: row => row.tipo_usuario,
+            sortable: true
+        },
+        {
+            name: "Activo?",
+            selector: row => row.activo ? "Activo" : "No activo",
             sortable: true
         },
         {
@@ -98,12 +101,15 @@ export default function Editar() {
         }
     ]
 
-
+    const opcionesPagination = {
+        rowsPerPageText: 'Elementos por página',
+        rangeSeparatorText: 'de'
+    }
 
     const navigate = useNavigate();
 
+    //Editar un empleado
     const submitEditar = async (id_usuario: number) => {
-        console.log(id_usuario);
         const response = await fetch(`${urlBase}/user/${id_usuario}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -111,17 +117,20 @@ export default function Editar() {
         });
 
         const content = await response.json();
-        console.log(content.nombre)
         if (response.ok) {
+            const response = await fetch(`${urlBase}/departamentos/${content.id_departamento}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await response.json();
+            setDepartamentoEditar(data);
             setUsuarioEditar(content);
-            navigate("/editar/" + id_usuario);
+            navigate("/editarEmpleado/" + id_usuario);
         }
-
-        console.log('Editar');
     }
 
+    //Eliminar un empleado
     const submitEliminar = async (id_usuario: number, nombre: string, apellidos: string) => {
-        console.log('Eliminar')
         swal({
             title: `¿Estás seguro de eliminar a ${nombre} ${apellidos}?`,
             text: "Una vez que lo elimines no podrás recuperar los datos",
@@ -147,15 +156,21 @@ export default function Editar() {
 
     return (
         <>
-            <DataTable
-                columns = {columns}
-                data = {empleados}
-                pagination
-                title = "Editar empleados"
-                persistTableHead
-                theme="customStyles"
+            <div className='tablaEmpleados'>
+                <DataTable
+                    columns={columns}
+                    data={empleados}
+                    pagination
+                    paginationComponentOptions={opcionesPagination}
+                    progressPending={pending}
+                    progressComponent={<Loading />}
+                    title="Editar empleados"
+                    noDataComponent="No hay empleados."
+                    persistTableHead
+                    theme="customStyles"
                 />
-            <br /> <br />
+                <br /> <br />
+            </div>
         </>
     )
 }

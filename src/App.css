@@ -1,15 +1,25 @@
-html, body, #root, .App {
+html,
+body,
+#root,
+.App {
   height: 100%;
   background-color: beige;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  position : absolute;
-	width : 100%;
+  position: absolute;
+  width: 100%;
 }
 
 .App {
+  text-align: center;
+}
+
+.pie {
+  position: absolute;
+  width: 100%;
+  bottom: 5px;
   text-align: center;
 }
 
@@ -43,6 +53,7 @@ html, body, #root, .App {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

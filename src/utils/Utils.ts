@@ -1,6 +1,7 @@
 import swal from 'sweetalert';
 import swal2 from 'sweetalert2';
 
+//Clase con distintos tipos de cuadros de diálogos emergentes.
 export const mostrarCuadroDialogo = function (titulo: string, texto: string, icono: string, tiempo: number) {
     return (
         swal({
@@ -13,23 +14,31 @@ export const mostrarCuadroDialogo = function (titulo: string, texto: string, ico
     )
 }
 
+export const acercaDe = () => {
+    swal("Acerca de", "Aplicación web de control de accesos\nAutor: José María Sáez Castro\nInstituto: IES Trassierra\nCurso: DAM\nAño: 2021/22");
+}
+
 const toast = swal2.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    //Esto es para que si pongo el ratón por encima del toast, se pare el temporizador del tiempo que está visible
-    // didOpen: (toast) => {
-    //     toast.addEventListener('mouseenter', swal2.stopTimer)
-    //     toast.addEventListener('mouseleave', swal2.resumeTimer)
-    // }
+
 })
 
 export const toastLogueado = function () {
     return (toast.fire({
         icon: 'success',
         title: 'Sesión iniciada correctamente'
+    })
+    )
+}
+
+export const toastRegistro = function (tipo: string) {
+    return (toast.fire({
+        icon: 'success',
+        title: `Registro de ${tipo} marcado correctamente`
     })
     )
 }

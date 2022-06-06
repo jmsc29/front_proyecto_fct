@@ -1,5 +1,11 @@
-.table{
+.table {
     width: 85%;
     text-align: center;
     margin: auto
+}
+
+.tablaEmpleados {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
 }

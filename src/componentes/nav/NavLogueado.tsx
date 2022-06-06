@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { urlBase } from '../../endpoints';
 import AuthContext from '../context/AuthContext';
-import { toastDesLogueado } from '../../utils/Utils';
+import { acercaDe, toastDesLogueado } from '../../utils/Utils';
 import "./Nav.css"
 
 export default function NavLogueado() {
@@ -23,7 +23,6 @@ export default function NavLogueado() {
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
         });
-        //mostrarCuadroDialogo("Sesión cerrada", "Has cerrado tu sesión correctamente.", "success", 3000);
         toastDesLogueado();
         return <Link to="/login" />
     }
@@ -43,11 +42,11 @@ export default function NavLogueado() {
 
                     {miUsuario.tipo_usuario === 'Admin' ?
                         <li className="nav-item">
-                            <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/dashboard" data-toggle="collapse" data-target=".navbar-collapse.show">Dashboard</NavLink>
+                            <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/dashboard" data-toggle="collapse" data-target=".navbar-collapse.show">Panel de marcajes</NavLink>
                         </li> : <></>}
 
                     <li className="nav-item">
-                        <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/panel" data-toggle="collapse" data-target=".navbar-collapse.show">Panel</NavLink>
+                        <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/panel" data-toggle="collapse" data-target=".navbar-collapse.show">Realizar marcaje</NavLink>
                     </li>
 
                     {miUsuario.tipo_usuario === 'Admin' ?
@@ -57,16 +56,22 @@ export default function NavLogueado() {
 
                     {miUsuario.tipo_usuario === 'Admin' ?
                         <li className="nav-item">
-                            <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/editar" data-toggle="collapse" data-target=".navbar-collapse.show">Editar empleado</NavLink>
+                            <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/editarEmpleado" data-toggle="collapse" data-target=".navbar-collapse.show">Empleados</NavLink>
                         </li> : <></>}
 
-
+                    {miUsuario.tipo_usuario === 'Admin' ?
+                        <li className="nav-item">
+                            <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/altaDepartamento" data-toggle="collapse" data-target=".navbar-collapse.show">Departamentos</NavLink>
+                        </li> : <></>}
 
                 </ul>
 
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item">
-                        <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/ajustes" data-toggle="collapse" data-target=".navbar-collapse.show">Ajustes</NavLink>
+                        <a className="navbar-brand text-secundary" onClick={acercaDe} data-toggle="collapse" data-target=".navbar-collapse.show">Acerca de</a>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="navbar-brand" style={({ isActive }) => isActive ? isActiveStyle : {}} to="/ajustes" data-toggle="collapse" data-target=".navbar-collapse.show">Cambiar contraseña</NavLink>
                     </li>
                     <li className="nav-item">
                         <Link className="navbar-brand text-danger" to="/login" data-toggle="collapse" data-target=".navbar-collapse.show" onClick={logout}>Cerrar sesión</Link>

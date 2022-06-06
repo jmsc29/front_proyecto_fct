@@ -8,12 +8,6 @@ import Cookies from 'js-cookie';
 
 function App() {
 
-  console.log(Cookies.get('jwt'));
-
-  if(Cookies.get('jwt')){
-
-  }
-
   //usuario en cuestión
   const { setMiUsuario } = useContext(AuthContext);
 
@@ -22,23 +16,23 @@ function App() {
     window.localStorage.clear();
     Cookies.remove('jwt');
   }
-  
+
   //window.onunload = limpiarAlmacenamientoInterno;  --> Este sería al cerrar la pestaña
   //Acción al cerrar el navegador -- limpiar el almacenamiento interno que contiene el usuario
   window.onclose = limpiarAlmacenamientoInterno;
 
   const { load } = useContext(AuthContext);
-  const [ loadAux, setLoadAux ] = useState();
+  const [loadAux, setLoadAux] = useState();
 
   useEffect(() => {
-    setLoadAux(load);  
-  },[load]);
+    setLoadAux(load);
+  }, [load]);
 
   return (
     <>
       <div className="App">
         {
-          loadAux ? (
+          load ? (
             <>
               <Nav />
               <MisRutas />
@@ -46,7 +40,9 @@ function App() {
           ) : <Loading />
         }
       </div>
-
+      <div className='pie'>
+        <span><i className="fa-solid fa-user"></i> JMSaez - 2022 - DAM</span>
+      </div>
     </>
   );
 }
